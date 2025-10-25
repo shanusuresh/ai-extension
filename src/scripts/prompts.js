@@ -317,6 +317,39 @@ Output Format:
 
 Tone:
 - Professional, executable, maintainable.
+`,
+/* Test data generator prompt */
+TESTDATA_GENERATOR: `
+Instructions:
+- Generate realistic test data relevant to the provided DOM. Produce the output as a JSON array of objects where each object represents one test row.
+- For form fields, infer reasonable keys (use input name/id/label when available) and provide 3-8 rows of varied data.
+- For dropdown/select elements, use only values present in the DOM.
+- For phone numbers, addresses and names, use realistic South India-style data where appropriate.
+- Do NOT include any explanatory text — return ONLY the JSON block.
+
+Context:
+DOM:
+\`\`\`html
+\${domContent}
+\`\`\`
+URL: \${pageUrl}
+
+Example Output:
+\`\`\`json
+[
+  {"firstName":"Priya","lastName":"Kumar","email":"priya.kumar@example.com","mobile":"+91-9876543210","pincode":"560001"},
+  {"firstName":"Arjun","lastName":"Rao","email":"arjun.rao@example.com","mobile":"+91-9123456780","pincode":"600001"}
+]
+\`\`\`
+
+Persona:
+- Audience: Test automation engineers who need synthetic datasets to feed into tests.
+
+Output Format:
+- A single JSON array inside a \`\`\`json\`\`\` block.
+
+Tone:
+- Realistic, varied, and directly usable.
 `
 };
 
@@ -349,5 +382,6 @@ export const CODE_GENERATOR_TYPES = {
   CUCUMBER_ONLY: 'Cucumber-Only',
   CUCUMBER_WITH_SELENIUM_JAVA_STEPS: 'Cucumber-With-Selenium-Java-Steps',
   PLAYWRIGHT_TYPESCRIPT_PAGE_ONLY: 'Playwright-Typescript-Page-Only',
-  CUCUMBER_WITH_PLAYWRIGHT_TYPESCRIPT_STEPS: 'Cucumber-With-Playwright-Typescript-Steps'
+  CUCUMBER_WITH_PLAYWRIGHT_TYPESCRIPT_STEPS: 'Cucumber-With-Playwright-Typescript-Steps',
+  TESTDATA_GENERATOR: 'TestData-Generator'
 };

@@ -561,9 +561,13 @@ class ChatUI {
         // Extract selected generation modes
         const isFeatureChecked = checkboxes.some(box => box.value === 'FEATURE');
         const isPageChecked = checkboxes.some(box => box.value === 'PAGE');
-
+        const isTestDataChecked = checkboxes.some(box => box.value === 'TESTDATA_GENERATOR');
+        
+         // Debug log
+        console.log('Checked checkboxes:', checkboxes.map(box => box.value));
+    
         // Validate that at least one option is selected
-        if (!isFeatureChecked && !isPageChecked) {
+        if (!isFeatureChecked && !isPageChecked && !isTestDataChecked) {
             console.warn('No generation mode selected. Defaulting to Page Object generation.');
             // Default fallback to page object generation
             if (this.isJavaSelenium(lang, eng)) {
@@ -572,11 +576,21 @@ class ChatUI {
             else if(this.IsTypeScriptPlaywright(lang,eng)){
                 promptKeys.push('PLAYWRIGHT_TYPESCRIPT_PAGE_ONLY');
             }
+            else if (isTestDataChecked) {
+                promptKeys.push('TESTDATA_GENERATOR');
+            }
             return promptKeys;
         }
 
         // Generate appropriate prompt keys based on selections and language/engine combination
         if (isFeatureChecked && isPageChecked) {
+            // All three selected - generate combined output
+            if (this.isJavaSelenium(lang, eng)) {
+                promptKeys.push('CUCUMBER_WITH_SELENIUM_JAVA_STEPS');
+            }else if(this.IsTypeScriptPlaywright(lang,eng)){
+                promptKeys.push('CUCUMBER_WITH_PLAYWRIGHT_TYPESCRIPT_STEPS');
+            }
+        } else if (isFeatureChecked && isPageChecked) {
             // Both feature and page selected - generate combined output
             if (this.isJavaSelenium(lang, eng)) {
                 promptKeys.push('CUCUMBER_WITH_SELENIUM_JAVA_STEPS');
@@ -603,6 +617,10 @@ class ChatUI {
             else {
                 this.addUnsupportedLanguageMessage(lang, eng);
             }
+        }
+        else if (isTestDataChecked) {
+            // Test data generation only
+            promptKeys.push('TESTDATA_GENERATOR');
         }
 
         return promptKeys;
